@@ -25,7 +25,7 @@ class SplashActivity : AppCompatActivity() {
             }
 
             override fun onAnimationEnd(animation: Animation?) {
-                startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
+                startActivity(Intent(this@SplashActivity, MapsActivity::class.java))
                 finish()
             }
 
