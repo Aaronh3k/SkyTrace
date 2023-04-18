@@ -83,6 +83,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        // Enable zoom controls
+        mMap.uiSettings.isZoomControlsEnabled = true
+
+        // Enable scrolling gestures
+        mMap.uiSettings.isScrollGesturesEnabled = true
+
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -102,4 +109,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
 }
