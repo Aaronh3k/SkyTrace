@@ -5,6 +5,11 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,6 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import ie.wit.skytrace.R
 import ie.wit.skytrace.databinding.ActivityMapsBinding
 
@@ -49,19 +55,35 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         } else {
             getLastLocation()
         }
+
+        binding.fabMapType.setOnClickListener {
+            showMapTypeSelector()
+        }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation()
-            }
+    private fun showMapTypeSelector() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val bottomSheetView = LayoutInflater.from(this).inflate(R.layout.map_type_bottom_sheet, null)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        bottomSheetView.findViewById<View>(R.id.map_type_normal).setOnClickListener {
+            mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
+            bottomSheetDialog.dismiss()
         }
+        bottomSheetView.findViewById<View>(R.id.map_type_satellite).setOnClickListener {
+            mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetView.findViewById<View>(R.id.map_type_terrain).setOnClickListener {
+            mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+            bottomSheetDialog.dismiss()
+        }
+        bottomSheetView.findViewById<View>(R.id.map_type_hybrid).setOnClickListener {
+            mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
     }
 
     @SuppressLint("MissingPermission")
@@ -109,5 +131,4 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-
 }

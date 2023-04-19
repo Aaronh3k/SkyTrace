@@ -21,4 +21,10 @@
     <!-- PopupOverlay style for SkyTrace theme -->
     <style name="Theme.SkyTrace.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
     </style>
+
+    <!-- New theme without an action bar. -->
+    <style name="Theme.SkyTrace.NoActionBar" parent="Theme.SkyTrace">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>
