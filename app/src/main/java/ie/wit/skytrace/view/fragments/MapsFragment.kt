@@ -1,4 +1,4 @@
-package ie.wit.skytrace.view
+package ie.wit.skytrace.view.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -6,13 +6,13 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,34 +21,39 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import ie.wit.skytrace.R
-import ie.wit.skytrace.databinding.ActivityMapsBinding
+import ie.wit.skytrace.viewmodel.MapsViewModel
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionCode = 1000
+    private lateinit var mapsViewModel: MapsViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_maps, container, false)
+    }
 
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
+                requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 locationPermissionCode
             )
@@ -56,40 +61,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             getLastLocation()
         }
 
-        binding.fabMapType.setOnClickListener {
-            showMapTypeSelector()
-        }
-    }
-
-    private fun showMapTypeSelector() {
-        val bottomSheetDialog = BottomSheetDialog(this)
-        val bottomSheetView = LayoutInflater.from(this).inflate(R.layout.map_type_bottom_sheet, null)
-        bottomSheetDialog.setContentView(bottomSheetView)
-
-        bottomSheetView.findViewById<View>(R.id.map_type_normal).setOnClickListener {
-            mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
-            bottomSheetDialog.dismiss()
-        }
-        bottomSheetView.findViewById<View>(R.id.map_type_satellite).setOnClickListener {
-            mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
-            bottomSheetDialog.dismiss()
-        }
-        bottomSheetView.findViewById<View>(R.id.map_type_terrain).setOnClickListener {
-            mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
-            bottomSheetDialog.dismiss()
-        }
-        bottomSheetView.findViewById<View>(R.id.map_type_hybrid).setOnClickListener {
-            mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
+        // Initialize the MapsViewModel
+        mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
+        mapsViewModel.currentLatLng.observe(viewLifecycleOwner, Observer {
+            updateMapLocation(it)
+        })
     }
 
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
-                this,
+                requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -97,7 +79,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                onMapReady(mMap)
+                // Update the MapsViewModel with the current location
+                mapsViewModel.updateLocation(location)
             }
         }
     }
@@ -113,10 +96,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.uiSettings.isScrollGesturesEnabled = true
 
         if (ActivityCompat.checkSelfPermission(
-                this,
+                requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
+                requireActivity(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -125,10 +108,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.isMyLocationEnabled = true
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
+                // Update the MapsViewModel with the current location
+                mapsViewModel.updateLocation(location)
+
+                // Add a marker for the current location
                 val currentLatLng = LatLng(location.latitude, location.longitude)
                 mMap.addMarker(MarkerOptions().position(currentLatLng).title("My Location"))
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
             }
         }
     }
+
+    // Update the map location when the currentLatLng LiveData is updated
+    private fun updateMapLocation(latLng: LatLng) {
+        mMap.clear()
+        mMap.addMarker(MarkerOptions().position(latLng).title("My Location"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+    }
 }
+
