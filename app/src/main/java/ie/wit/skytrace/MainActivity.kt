@@ -13,13 +13,13 @@ class MainActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, SplashFragment())
-                .commit()
+                .commitAllowingStateLoss()
         }
     }
 
     fun navigateToMaps() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, MapsFragment())
-            .commit()
+            .commitAllowingStateLoss()
     }
 }

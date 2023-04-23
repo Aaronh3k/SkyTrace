@@ -20,6 +20,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import ie.wit.skytrace.R
 import ie.wit.skytrace.databinding.FragmentMapsBinding
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
@@ -32,6 +33,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mapsViewModel: MapsViewModel
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
+    private lateinit var bottomBar: BottomNavigationView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,6 +76,29 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 setMapType(selectedMapType)
             }
             mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
+        }
+
+        // Initialize the bottom bar
+        bottomBar = binding.bottomNavigationView
+        bottomBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.action_maps -> {
+                    val mapsFragment = MapsFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, mapsFragment)
+                        .commit()
+                }
+                R.id.action_search -> {
+                    // Navigate to Search screen
+                }
+                R.id.action_flight -> {
+                    // Navigate to My Flight screen
+                }
+                R.id.action_account -> {
+                    // Navigate to Account screen
+                }
+            }
+            true
         }
     }
 

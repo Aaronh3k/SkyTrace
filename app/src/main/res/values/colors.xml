@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="active_color">#FF6200EE</color>
+    <color name="inactive_color">#808080</color>
+    <color name="bottom_bar_background">#FFFFFF</color>
+    <color name="dark_gray">#282828</color>
+    <color name="accent_color">#FF4081</color>
+    <color name="accent_color_dark">#E91E63</color>
 </resources>
