@@ -5,36 +5,32 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/map_type_normal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Normal"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/map_type_satellite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Satellite"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/map_type_terrain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Terrain"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/map_type_hybrid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hybrid"
-        android:textSize="18sp"
-        android:padding="8dp" />
+        style="@style/Widget.MaterialComponents.Button.TextButton" />
 
 </LinearLayout>

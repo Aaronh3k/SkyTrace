@@ -1,10 +1,9 @@
-package ie.wit.skytrace.view
+package ie.wit.skytrace
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import ie.wit.skytrace.R
-import ie.wit.skytrace.view.fragments.MapsFragment
-import ie.wit.skytrace.view.fragments.SplashFragment
+import ie.wit.skytrace.ui.map.MapsFragment
+import ie.wit.skytrace.ui.splash.SplashFragment
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

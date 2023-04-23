@@ -1,6 +1,6 @@
-package ie.wit.skytrace.view.fragments
+package ie.wit.skytrace.ui.splash
 
-import ie.wit.skytrace.view.MainActivity
+import ie.wit.skytrace.MainActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,11 +30,11 @@ class SplashFragment : Fragment() {
         textView.startAnimation(anim)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            navigateToHome()
+            navigateToMaps()
         }, 3000)
     }
 
-    private fun navigateToHome() {
+    private fun navigateToMaps() {
         (activity as MainActivity).navigateToMaps()
     }
 }

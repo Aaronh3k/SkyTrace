@@ -1,4 +1,4 @@
-package ie.wit.skytrace.view.fragments
+package ie.wit.skytrace.ui.map
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -22,7 +21,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import ie.wit.skytrace.R
-import ie.wit.skytrace.viewmodel.MapsViewModel
+import ie.wit.skytrace.databinding.FragmentMapsBinding
+import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
 
@@ -30,12 +30,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionCode = 1000
     private lateinit var mapsViewModel: MapsViewModel
+    private var _binding: FragmentMapsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+    ): View {
+        _binding = FragmentMapsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,11 +64,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             getLastLocation()
         }
 
-        // Initialize the MapsViewModel
-        mapsViewModel = ViewModelProvider(this).get(MapsViewModel::class.java)
-        mapsViewModel.currentLatLng.observe(viewLifecycleOwner, Observer {
+        mapsViewModel = ViewModelProvider(this)[MapsViewModel::class.java]
+        mapsViewModel.currentLatLng.observe(viewLifecycleOwner) {
             updateMapLocation(it)
-        })
+        }
+
+        binding.fabMapType.setOnClickListener {
+            val mapTypeBottomSheetFragment = MapTypeBottomSheetFragment { selectedMapType ->
+                setMapType(selectedMapType)
+            }
+            mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     @SuppressLint("MissingPermission")
@@ -124,6 +138,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.clear()
         mMap.addMarker(MarkerOptions().position(latLng).title("My Location"))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+    }
+
+    private fun setMapType(mapType: Int) {
+        mMap.mapType = mapType
     }
 }
 
