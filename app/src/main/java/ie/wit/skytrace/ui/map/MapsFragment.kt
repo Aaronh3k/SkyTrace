@@ -35,7 +35,7 @@ import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
 
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -81,7 +81,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mapsViewModel = ViewModelProvider(this)[MapsViewModel::class.java]
         mapsViewModel.currentLatLng.observe(viewLifecycleOwner) { currentLatLng ->
             updateMapLocation(currentLatLng)
-            fetchFlightStates(currentLatLng)
         }
 
         binding.fabMapType.setOnClickListener {
@@ -91,7 +90,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
         }
 
-        // Initialize the bottom bar
         bottomBar = binding.bottomNavigationView
         bottomBar.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -113,6 +111,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             }
             true
         }
+
+        mapsViewModel.currentLatLng.observe(viewLifecycleOwner) { currentLatLng ->
+            updateMapLocation(currentLatLng)
+        }
     }
 
     override fun onDestroyView() {
@@ -131,7 +133,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-               // Update the MapsViewModel with the current location
+                // Update the MapsViewModel with the current location
                 mapsViewModel.updateLocation(location)
             }
         }
@@ -158,6 +160,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             return
         }
         mMap.isMyLocationEnabled = true
+
+        mMap.setOnCameraIdleListener(this)
+    }
+
+    override fun onCameraIdle() {
+        val visibleRegion = mMap.projection.visibleRegion.latLngBounds
+
+        val lamin = visibleRegion.southwest.latitude.toFloat()
+        val lomin = visibleRegion.southwest.longitude.toFloat()
+        val lamax = visibleRegion.northeast.latitude.toFloat()
+        val lomax = visibleRegion.northeast.longitude.toFloat()
+
+        fetchFlightStates(lamin, lomin, lamax, lomax)
     }
 
     // Update the map location when the currentLatLng LiveData is updated
@@ -167,7 +182,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
     }
 
-    private fun fetchFlightStates(currentLatLng: LatLng) {
+    private fun fetchFlightStates(lamin: Float, lomin: Float, lamax: Float, lomax: Float) {
         val flightTrackerViewModelFactory = FlightTrackerViewModelFactory(
             FlightTrackerRepository()
         )
@@ -176,13 +191,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             flightTrackerViewModelFactory
         )[FlightTrackerViewModel::class.java]
 
-        val latDiff = 0.5
-        val lonDiff = 0.5
         flightTrackerViewModel.fetchFlightStates(
-            lamin = (currentLatLng.latitude - latDiff).toFloat(),
-            lomin = (currentLatLng.longitude - lonDiff).toFloat(),
-            lamax = (currentLatLng.latitude + latDiff).toFloat(),
-            lomax = (currentLatLng.longitude + lonDiff).toFloat()
+            lamin = lamin,
+            lomin = lomin,
+            lamax = lamax,
+            lomax = lomax
         )
 
         flightTrackerViewModel.flightStates.observe(viewLifecycleOwner, Observer { flightStates ->
@@ -220,8 +233,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         matrix.postRotate(angle)
         return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
-
-
 
     private fun setMapType(mapType: Int) {
         mMap.mapType = mapType
