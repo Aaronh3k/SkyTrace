@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -18,11 +19,17 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ie.wit.skytrace.R
 import ie.wit.skytrace.databinding.FragmentMapsBinding
+import ie.wit.skytrace.model.FlightState
+import ie.wit.skytrace.model.repository.FlightTrackerRepository
+import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
+import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
 
 class MapsFragment : Fragment(), OnMapReadyCallback {
@@ -34,6 +41,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
     private lateinit var bottomBar: BottomNavigationView
+    private lateinit var flightTrackerViewModel: FlightTrackerViewModel
+    private val markers = mutableListOf<Marker>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,8 +76,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
 
         mapsViewModel = ViewModelProvider(this)[MapsViewModel::class.java]
-        mapsViewModel.currentLatLng.observe(viewLifecycleOwner) {
-            updateMapLocation(it)
+        mapsViewModel.currentLatLng.observe(viewLifecycleOwner) { currentLatLng ->
+            updateMapLocation(currentLatLng)
+            fetchFlightStates(currentLatLng)
         }
 
         binding.fabMapType.setOnClickListener {
@@ -78,28 +88,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
         }
 
-        // Initialize the bottom bar
-        bottomBar = binding.bottomNavigationView
-        bottomBar.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.action_maps -> {
-                    val mapsFragment = MapsFragment()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, mapsFragment)
-                        .commit()
-                }
-                R.id.action_search -> {
-                    // Navigate to Search screen
-                }
-                R.id.action_flight -> {
-                    // Navigate to My Flight screen
-                }
-                R.id.action_account -> {
-                    // Navigate to Account screen
-                }
-            }
-            true
-        }
+        // Remove bottom bar initialization and usage
     }
 
     override fun onDestroyView() {
@@ -118,7 +107,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                // Update the MapsViewModel with the current location
+// Update the MapsViewModel with the current location
                 mapsViewModel.updateLocation(location)
             }
         }
@@ -145,17 +134,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             return
         }
         mMap.isMyLocationEnabled = true
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                // Update the MapsViewModel with the current location
-                mapsViewModel.updateLocation(location)
-
-                // Add a marker for the current location
-                val currentLatLng = LatLng(location.latitude, location.longitude)
-                mMap.addMarker(MarkerOptions().position(currentLatLng).title("My Location"))
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
-            }
-        }
     }
 
     // Update the map location when the currentLatLng LiveData is updated
@@ -165,8 +143,52 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
     }
 
+    private fun fetchFlightStates(currentLatLng: LatLng) {
+        val flightTrackerViewModelFactory = FlightTrackerViewModelFactory(
+            FlightTrackerRepository()
+        )
+        flightTrackerViewModel = ViewModelProvider(
+            this,
+            flightTrackerViewModelFactory
+        )[FlightTrackerViewModel::class.java]
+
+        val latDiff = 0.5
+        val lonDiff = 0.5
+        println((currentLatLng.latitude - latDiff).toFloat())
+        println((currentLatLng.longitude - lonDiff).toFloat())
+        println((currentLatLng.latitude + latDiff).toFloat())
+        println((currentLatLng.longitude + lonDiff).toFloat())
+        flightTrackerViewModel.fetchFlightStates(
+            lamin = (currentLatLng.latitude - latDiff).toFloat(),
+            lomin = (currentLatLng.longitude - lonDiff).toFloat(),
+            lamax = (currentLatLng.latitude + latDiff).toFloat(),
+            lomax = (currentLatLng.longitude + lonDiff).toFloat()
+        )
+
+        flightTrackerViewModel.flightStates.observe(viewLifecycleOwner, Observer { flightStates ->
+            updateFlightMarkers(flightStates)
+        })
+    }
+
+    private fun updateFlightMarkers(flightStates: List<FlightState>) {
+        markers.forEach { it.remove() }
+        markers.clear()
+
+        flightStates.forEach { flightState ->
+            flightState.latitude?.let { latitude ->
+                flightState.longitude?.let { longitude ->
+                    val position = LatLng(latitude, longitude)
+                    val markerOptions = MarkerOptions()
+                        .position(position)
+                        .title(flightState.callsign)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flight_marker))
+                    mMap.addMarker(markerOptions)?.let { markers.add(it) }
+                }
+            }
+        }
+    }
+
     private fun setMapType(mapType: Int) {
         mMap.mapType = mapType
     }
 }
-
