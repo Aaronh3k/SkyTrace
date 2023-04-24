@@ -143,6 +143,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
+
         // Enable zoom controls
         mMap.uiSettings.isZoomControlsEnabled = true
 
