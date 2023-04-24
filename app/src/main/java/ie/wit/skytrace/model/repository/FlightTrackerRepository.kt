@@ -1,6 +1,8 @@
 package ie.wit.skytrace.model.repository
 
+import ie.wit.skytrace.BuildConfig
 import ie.wit.skytrace.model.FlightStateData
+import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -12,15 +14,12 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://opensky-network.org/"
 
-class AddCookieInterceptor : Interceptor {
+class AuthInterceptor(private val username: String, private val password: String) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val requestBuilder = originalRequest.newBuilder()
-
-        val cookie = "_gid=GA1.2.95239262.1682286101; reDimCookieHint=1; joomla_user_state=logged_in; 910fe6bd4787703d58ff06cf8b5708ff=kgssaqap1hukko8eq7q0nclh8n; joomla_remember_me_46453b3ce631ae1e245f8a9371f44911=Zxj5159M8CxxgLsG.MoAHz7lajlEZouxI21gF; _ga_R4BXH0SS4N=GS1.1.1682335781.4.1.1682335894.0.0.0; _ga=GA1.1.1107229751.1682286101; XSRF-TOKEN=6cedd40d-1600-445b-b9d9-7cde28578d74"
-
-        requestBuilder.addHeader("Cookie", cookie)
-
+        val credentials = Credentials.basic(username, password)
+        requestBuilder.addHeader("Authorization", credentials)
         val newRequest = requestBuilder.build()
         return chain.proceed(newRequest)
     }
@@ -28,7 +27,7 @@ class AddCookieInterceptor : Interceptor {
 
 private val client: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-    .addInterceptor(AddCookieInterceptor())
+    .addInterceptor(AuthInterceptor(BuildConfig.OPENSKY_USERNAME, BuildConfig.OPENSKY_PASSWORD))
     .build()
 
 private val retrofit: Retrofit = Retrofit.Builder()

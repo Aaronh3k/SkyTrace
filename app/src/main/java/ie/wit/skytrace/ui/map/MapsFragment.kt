@@ -3,6 +3,9 @@ package ie.wit.skytrace.ui.map
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -88,7 +91,28 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
         }
 
-        // Remove bottom bar initialization and usage
+        // Initialize the bottom bar
+        bottomBar = binding.bottomNavigationView
+        bottomBar.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.action_maps -> {
+                    val mapsFragment = MapsFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, mapsFragment)
+                        .commit()
+                }
+                R.id.action_search -> {
+                    // Navigate to Search screen
+                }
+                R.id.action_flight -> {
+                    // Navigate to My Flight screen
+                }
+                R.id.action_account -> {
+                    // Navigate to Account screen
+                }
+            }
+            true
+        }
     }
 
     override fun onDestroyView() {
@@ -107,7 +131,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-// Update the MapsViewModel with the current location
+               // Update the MapsViewModel with the current location
                 mapsViewModel.updateLocation(location)
             }
         }
@@ -154,10 +178,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         val latDiff = 0.5
         val lonDiff = 0.5
-        println((currentLatLng.latitude - latDiff).toFloat())
-        println((currentLatLng.longitude - lonDiff).toFloat())
-        println((currentLatLng.latitude + latDiff).toFloat())
-        println((currentLatLng.longitude + lonDiff).toFloat())
         flightTrackerViewModel.fetchFlightStates(
             lamin = (currentLatLng.latitude - latDiff).toFloat(),
             lomin = (currentLatLng.longitude - lonDiff).toFloat(),
@@ -178,15 +198,30 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             flightState.latitude?.let { latitude ->
                 flightState.longitude?.let { longitude ->
                     val position = LatLng(latitude, longitude)
+                    val angle = flightState.trueTrack?.toFloat() ?: 0f
+                    val rotatedIcon = BitmapDescriptorFactory.fromBitmap(
+                        rotateBitmap(
+                            BitmapFactory.decodeResource(resources, R.drawable.ic_flight_marker),
+                            angle
+                        )
+                    )
                     val markerOptions = MarkerOptions()
                         .position(position)
                         .title(flightState.callsign)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_flight_marker))
+                        .icon(rotatedIcon)
                     mMap.addMarker(markerOptions)?.let { markers.add(it) }
                 }
             }
         }
     }
+
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
+    }
+
+
 
     private fun setMapType(mapType: Int) {
         mMap.mapType = mapType

@@ -2,6 +2,7 @@ package ie.wit.skytrace.ui.flighttracker
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Matrix
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,7 @@ import ie.wit.skytrace.R
 class FlightTrackerFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var flightTrackerViewModel: FlightTrackerViewModel
-    private lateinit var map: GoogleMap
+    private lateinit var mMap: GoogleMap
     private var _binding: FragmentFlightTrackerBinding? = null
     private val binding get() = _binding!!
 
@@ -56,35 +57,46 @@ class FlightTrackerFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
+        mMap = googleMap
+
+        // Enable zoom controls
+        mMap.uiSettings.isZoomControlsEnabled = true
+
+        // Enable scrolling gestures
+        mMap.uiSettings.isScrollGesturesEnabled = true
 
         flightTrackerViewModel.flightStates.observe(viewLifecycleOwner) { flightStates ->
             flightStates.forEach { flightState ->
                 flightState.latitude?.let { latitude ->
                     flightState.longitude?.let { longitude ->
-                        val markerIcon = resizedBitmapDescriptor(R.drawable.ic_flight_marker, 24, 24)
-                        println(flightState.trueTrack)
-                        val rotation = flightState.trueTrack?.toFloat() ?: 0f
+                        val trueTrack = flightState.trueTrack?.toFloat() ?: 0f
+                        val rotation = (360 - trueTrack + 90) % 360
+                        val markerIcon = resizedAndRotatedBitmapDescriptor(R.drawable.ic_flight_marker, 24, 24, rotation)
                         val markerOptions = MarkerOptions()
                             .position(LatLng(latitude, longitude))
                             .icon(markerIcon)
-                            .rotation(rotation)
                             .anchor(0.5f, 0.5f)
 
-                        map.addMarker(markerOptions)
+                        mMap.addMarker(markerOptions)
                     }
                 }
             }
         }
     }
 
-    private fun resizedBitmapDescriptor(resourceId: Int, width: Int, height: Int): BitmapDescriptor {
+    private fun resizedAndRotatedBitmapDescriptor(resourceId: Int, width: Int, height: Int, rotation: Float): BitmapDescriptor {
         val drawable = ContextCompat.getDrawable(requireContext(), resourceId)
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         drawable!!.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)
-        return BitmapDescriptorFactory.fromBitmap(bitmap)
+        return BitmapDescriptorFactory.fromBitmap(rotateBitmap(bitmap, rotation))
+    }
+
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     override fun onDestroyView() {

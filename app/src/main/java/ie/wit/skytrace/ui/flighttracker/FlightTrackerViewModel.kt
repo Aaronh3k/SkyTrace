@@ -61,16 +61,12 @@ class FlightTrackerViewModel(private val repository: FlightTrackerRepository) : 
                     )
                 }
             } catch (e: HttpException) {
-                println("YYYYYYYYYYYYYYYYY")
-                println(e)
                 if (e.code() == 429) {
                     _errorMessage.value = "Too many requests. Please try again later."
                 } else {
                     _errorMessage.value = "An HTTP error occurred: ${e.message}"
                 }
             } catch (e: Exception) {
-                println("XXXXXXXXXXXXXXX")
-                println(e)
                 _errorMessage.value = "An error occurred: ${e.message}"
             }
         }
