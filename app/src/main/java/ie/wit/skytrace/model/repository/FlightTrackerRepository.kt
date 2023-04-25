@@ -11,6 +11,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import ie.wit.skytrace.model.AircraftMetadata
+import ie.wit.skytrace.model.AircraftTrack
+import retrofit2.http.Path
 
 private const val BASE_URL = "https://opensky-network.org/"
 
@@ -47,6 +50,16 @@ interface OpenSkyApi {
         @Query("lomax") lomax: Float? = null,
         @Query("extended") extended: Int? = null
     ): FlightStateData
+
+    @GET("api/metadata/aircraft/icao24/{icao24}")
+    suspend fun getAircraftMetadata(
+        @Path("icao24") icao24: String
+    ): AircraftMetadata
+
+    @GET("api/tracks/{icao24}")
+    suspend fun getAircraftTrack(
+        @Path("icao24") icao24: String
+    ): AircraftTrack
 }
 
 class FlightTrackerRepository {
@@ -70,5 +83,13 @@ class FlightTrackerRepository {
             lomax = lomax,
             extended = extended
         )
+    }
+
+    suspend fun getAircraftMetadata(icao24: String): AircraftMetadata {
+        return openSkyApi.getAircraftMetadata(icao24)
+    }
+
+    suspend fun getAircraftTrack(icao24: String): AircraftTrack {
+        return openSkyApi.getAircraftTrack(icao24)
     }
 }

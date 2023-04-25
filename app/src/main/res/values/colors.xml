@@ -15,4 +15,5 @@
     <color name="dark_gray">#282828</color>
     <color name="accent_color">#FF4081</color>
     <color name="accent_color_dark">#E91E63</color>
+    <color name="colorSecondary">#FFC107</color>
 </resources>

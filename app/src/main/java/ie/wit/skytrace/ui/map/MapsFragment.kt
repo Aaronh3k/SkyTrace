@@ -11,6 +11,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,6 +34,7 @@ import ie.wit.skytrace.R
 import ie.wit.skytrace.databinding.FragmentMapsBinding
 import ie.wit.skytrace.model.FlightState
 import ie.wit.skytrace.model.repository.FlightTrackerRepository
+import ie.wit.skytrace.ui.flightdetails.FlightDetailsBottomSheet
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
@@ -164,6 +168,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
         mMap.isMyLocationEnabled = true
 
         mMap.setOnCameraIdleListener(this)
+
+        //mMap.setOnMarkerClickListener(this)
     }
 
     override fun onCameraIdle() {
@@ -224,9 +230,44 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         .position(position)
                         .title(flightState.callsign)
                         .icon(rotatedIcon)
-                    mMap.addMarker(markerOptions)?.let { markers.add(it) }
+                    mMap.addMarker(markerOptions)?.let {
+                        markers.add(it)
+                        it.tag = flightState
+                    }
                 }
             }
+        }
+
+        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            @SuppressLint("StringFormatMatches", "InflateParams")
+            override fun getInfoWindow(marker: Marker): View {
+                val flightState = marker.tag as? FlightState
+                val view = layoutInflater.inflate(R.layout.info_window_flight_extended, null)
+                view.findViewById<TextView>(R.id.callsign_text).text = flightState?.callsign
+                view.findViewById<TextView>(R.id.origin_country_text).text = flightState?.originCountry
+//                view.findViewById<TextView>(R.id.altitude_text).text = getString(R.string.altitude_info, flightState?.baroAltitude)
+//                view.findViewById<TextView>(R.id.speed_text).text = getString(R.string.speed_info, flightState?.velocity)
+//                view.findViewById<TextView>(R.id.vertical_rate_text).text = getString(R.string.vertical_rate_info, flightState?.verticalRate)
+//                view.findViewById<TextView>(R.id.squawk_text).text = getString(R.string.squawk_info, flightState?.squawk)
+
+                // Handle "More Details" button click
+                val moreDetailsButton = view.findViewById<AppCompatImageView>(R.id.more_details_button)
+                moreDetailsButton.setOnClickListener {
+                    val bottomSheet = FlightDetailsBottomSheet()
+                    bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
+                }
+
+                return view
+            }
+
+            override fun getInfoContents(marker: Marker): View? {
+                return null
+            }
+        })
+
+        mMap.setOnMarkerClickListener { marker ->
+            marker.showInfoWindow()
+            true
         }
     }
 
