@@ -11,9 +11,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -169,7 +167,31 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
 
         mMap.setOnCameraIdleListener(this)
 
-        //mMap.setOnMarkerClickListener(this)
+        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
+            @SuppressLint("StringFormatMatches", "InflateParams")
+            override fun getInfoWindow(marker: Marker): View {
+                val flightState = marker.tag as? FlightState
+                val view = layoutInflater.inflate(R.layout.info_window_flight_extended, null)
+                view.findViewById<TextView>(R.id.callsign_text).text = flightState?.callsign
+                view.findViewById<TextView>(R.id.origin_country_text).text = flightState?.originCountry
+
+                return view
+            }
+
+
+            override fun getInfoContents(marker: Marker): View? {
+                return null
+            }
+        })
+
+        mMap.setOnInfoWindowClickListener { marker ->
+            val flightState = marker.tag as? FlightState
+            flightState?.let {
+                val bottomSheet = FlightDetailsBottomSheet(marker)
+                bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
+            }
+        }
+
     }
 
     override fun onCameraIdle() {
@@ -238,38 +260,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
             }
         }
 
-        mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            @SuppressLint("StringFormatMatches", "InflateParams")
-            override fun getInfoWindow(marker: Marker): View {
-                val flightState = marker.tag as? FlightState
-                val view = layoutInflater.inflate(R.layout.info_window_flight_extended, null)
-                view.findViewById<TextView>(R.id.callsign_text).text = flightState?.callsign
-                view.findViewById<TextView>(R.id.origin_country_text).text = flightState?.originCountry
-//                view.findViewById<TextView>(R.id.altitude_text).text = getString(R.string.altitude_info, flightState?.baroAltitude)
-//                view.findViewById<TextView>(R.id.speed_text).text = getString(R.string.speed_info, flightState?.velocity)
-//                view.findViewById<TextView>(R.id.vertical_rate_text).text = getString(R.string.vertical_rate_info, flightState?.verticalRate)
-//                view.findViewById<TextView>(R.id.squawk_text).text = getString(R.string.squawk_info, flightState?.squawk)
-
-                // Handle "More Details" button click
-                val moreDetailsButton = view.findViewById<AppCompatImageView>(R.id.more_details_button)
-                moreDetailsButton.setOnClickListener {
-                    val bottomSheet = FlightDetailsBottomSheet()
-                    bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
-                }
-
-                return view
-            }
-
-            override fun getInfoContents(marker: Marker): View? {
-                return null
-            }
-        })
-
         mMap.setOnMarkerClickListener { marker ->
             marker.showInfoWindow()
             true
         }
     }
+
 
     private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap {
         val matrix = Matrix()
