@@ -13,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import ie.wit.skytrace.model.AircraftMetadata
 import ie.wit.skytrace.model.AircraftTrack
+import ie.wit.skytrace.model.FlightRoute
 import retrofit2.http.Path
 
 private const val BASE_URL = "https://opensky-network.org/"
@@ -60,6 +61,12 @@ interface OpenSkyApi {
     suspend fun getAircraftTrack(
         @Path("icao24") icao24: String
     ): AircraftTrack
+
+    @GET("api/routes")
+    suspend fun getFlightRoute(
+        @Query("callsign") callsign: String
+    ): FlightRoute
+
 }
 
 class FlightTrackerRepository {
@@ -92,4 +99,9 @@ class FlightTrackerRepository {
     suspend fun getAircraftTrack(icao24: String): AircraftTrack {
         return openSkyApi.getAircraftTrack(icao24)
     }
+
+    suspend fun getFlightRoute(callsign: String): FlightRoute {
+        return openSkyApi.getFlightRoute(callsign)
+    }
+
 }

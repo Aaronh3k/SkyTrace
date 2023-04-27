@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ie.wit.skytrace.model.FlightRoute
 import ie.wit.skytrace.model.FlightState
 import ie.wit.skytrace.model.repository.FlightTrackerRepository
 import kotlinx.coroutines.launch
@@ -17,6 +18,14 @@ class FlightTrackerViewModel(private val repository: FlightTrackerRepository) : 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?>
         get() = _errorMessage
+
+    private val _flightRoutes = MutableLiveData<Map<String, FlightRoute>>()
+    val flightRoutes: LiveData<Map<String, FlightRoute>>
+        get() = _flightRoutes
+
+    init {
+        _flightRoutes.value = emptyMap()
+    }
 
     fun fetchFlightStates(
         time: Int? = null,
@@ -70,6 +79,26 @@ class FlightTrackerViewModel(private val repository: FlightTrackerRepository) : 
                 _errorMessage.value = "An error occurred: ${e.message}"
             }
         }
+    }
+
+    fun getFlightRoute(callsign: String): LiveData<FlightRoute>{
+        val currentRoutes = _flightRoutes.value ?: emptyMap()
+
+        if (!currentRoutes.containsKey(callsign)) {
+            viewModelScope.launch {
+                try {
+                    val result = repository.getFlightRoute(callsign)
+                    println(result)
+                    _flightRoutes.value = currentRoutes + (callsign to result)
+                } catch (e: HttpException) {
+                    // Handle HTTP exceptions here
+                } catch (e: Exception) {
+                    // Handle other exceptions here
+                }
+            }
+        }
+
+        return MutableLiveData(currentRoutes[callsign])
     }
 
     fun onErrorMessageDisplayed() {

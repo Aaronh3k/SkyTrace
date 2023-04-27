@@ -11,11 +11,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ie.wit.skytrace.R
 import ie.wit.skytrace.databinding.FragmentMapsBinding
+import ie.wit.skytrace.databinding.InfoWindowFlightExtendedBinding
 import ie.wit.skytrace.model.FlightState
 import ie.wit.skytrace.model.repository.FlightTrackerRepository
 import ie.wit.skytrace.ui.flightdetails.FlightDetailsBottomSheet
@@ -168,16 +170,27 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
         mMap.setOnCameraIdleListener(this)
 
         mMap.setInfoWindowAdapter(object : GoogleMap.InfoWindowAdapter {
-            @SuppressLint("StringFormatMatches", "InflateParams")
+            @SuppressLint("InflateParams")
             override fun getInfoWindow(marker: Marker): View {
                 val flightState = marker.tag as? FlightState
-                val view = layoutInflater.inflate(R.layout.info_window_flight_extended, null)
-                view.findViewById<TextView>(R.id.callsign_text).text = flightState?.callsign
-                view.findViewById<TextView>(R.id.origin_country_text).text = flightState?.originCountry
+                val inflater = requireActivity().layoutInflater
+                val binding = InfoWindowFlightExtendedBinding.inflate(inflater, null, false)
 
-                return view
+                binding.callsignText.text = flightState?.callsign
+                binding.originCountryText.text = flightState?.originCountry
+
+                flightState?.callsign?.let { callsign ->
+                    flightTrackerViewModel.getFlightRoute(callsign).observe(viewLifecycleOwner) { flightRoute ->
+                        val routeText = flightRoute?.route?.joinToString(separator = " ✈️ ") ?: "Route unavailable"
+                        binding.routeText.text = routeText
+                    }
+                }
+
+                val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.info_window_animation)
+                binding.root.startAnimation(animation)
+
+                return binding.root
             }
-
 
             override fun getInfoContents(marker: Marker): View? {
                 return null
@@ -191,7 +204,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                 bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
             }
         }
-
     }
 
     override fun onCameraIdle() {
@@ -228,9 +240,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
             lomax = lomax
         )
 
-        flightTrackerViewModel.flightStates.observe(viewLifecycleOwner, Observer { flightStates ->
+        flightTrackerViewModel.flightStates.observe(viewLifecycleOwner) { flightStates ->
             updateFlightMarkers(flightStates)
-        })
+        }
     }
 
     private fun updateFlightMarkers(flightStates: List<FlightState>) {
