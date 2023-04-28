@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ie.wit.skytrace.model.AircraftMetadata
 import ie.wit.skytrace.model.FlightRoute
 import ie.wit.skytrace.model.FlightState
 import ie.wit.skytrace.model.repository.FlightTrackerRepository
@@ -18,6 +19,9 @@ class FlightTrackerViewModel(private val repository: FlightTrackerRepository) : 
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?>
         get() = _errorMessage
+
+    private val _aircraftMetadata = MutableLiveData<AircraftMetadata>()
+    val aircraftMetadata: LiveData<AircraftMetadata> = _aircraftMetadata
 
     private val _flightRoutes = MutableLiveData<Map<String, FlightRoute>>()
     val flightRoutes: LiveData<Map<String, FlightRoute>>
@@ -99,6 +103,17 @@ class FlightTrackerViewModel(private val repository: FlightTrackerRepository) : 
         }
 
         return MutableLiveData(currentRoutes[callsign])
+    }
+
+    fun getAircraftMetadata(icao24: String) {
+        viewModelScope.launch {
+            try {
+                val metadata = repository.getAircraftMetadata(icao24)
+                _aircraftMetadata.value = metadata
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
     }
 
     fun onErrorMessageDisplayed() {

@@ -52,7 +52,7 @@ interface OpenSkyApi {
         @Query("extended") extended: Int? = null
     ): FlightStateData
 
-    @GET("api/metadata/aircraft/icao24/{icao24}")
+    @GET("api/metadata/aircraft/icao/{icao24}")
     suspend fun getAircraftMetadata(
         @Path("icao24") icao24: String
     ): AircraftMetadata

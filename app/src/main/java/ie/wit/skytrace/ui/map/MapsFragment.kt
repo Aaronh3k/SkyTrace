@@ -50,6 +50,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
     private lateinit var bottomBar: BottomNavigationView
     private lateinit var flightTrackerViewModel: FlightTrackerViewModel
     private val markers = mutableListOf<Marker>()
+    var isBottomSheetOpen = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -200,8 +201,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
         mMap.setOnInfoWindowClickListener { marker ->
             val flightState = marker.tag as? FlightState
             flightState?.let {
-                val bottomSheet = FlightDetailsBottomSheet(marker)
-                bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
+                flightTrackerViewModel.getAircraftMetadata(flightState.icao24)
+                flightTrackerViewModel.aircraftMetadata.observe(viewLifecycleOwner) { aircraftMetadata ->
+                    if (isBottomSheetOpen) {
+                        val bottomSheet =
+                            childFragmentManager.findFragmentByTag("flightDetailsBottomSheet") as? FlightDetailsBottomSheet
+                        bottomSheet?.dismiss()
+                        isBottomSheetOpen = false
+                    } else {
+                        val bottomSheet = FlightDetailsBottomSheet(marker, aircraftMetadata)
+                        bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
+                        isBottomSheetOpen = true
+                    }
+                }
             }
         }
     }
