@@ -38,6 +38,7 @@ import ie.wit.skytrace.ui.flightdetails.FlightDetailsBottomSheet
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
+import ie.wit.skytrace.ui.search.SearchFragment
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
@@ -105,7 +106,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         .commit()
                 }
                 R.id.action_search -> {
-                    // Navigate to Search screen
+                    val searchFragment = SearchFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, searchFragment)
+                        .addToBackStack(null)
+                        .commit()
                 }
                 R.id.action_flight -> {
                     // Navigate to My Flight screen
