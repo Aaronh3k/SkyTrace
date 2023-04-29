@@ -1,7 +1,7 @@
 package ie.wit.skytrace.model.repository
 
 import ie.wit.skytrace.BuildConfig
-import ie.wit.skytrace.model.FlightStateData
+import ie.wit.skytrace.model.*
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -11,9 +11,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import ie.wit.skytrace.model.AircraftMetadata
-import ie.wit.skytrace.model.AircraftTrack
-import ie.wit.skytrace.model.FlightRoute
 import retrofit2.http.Path
 
 private const val BASE_URL = "https://opensky-network.org/"
@@ -67,6 +64,12 @@ interface OpenSkyApi {
         @Query("callsign") callsign: String
     ): FlightRoute
 
+    @GET("api/flights/all")
+    suspend fun getFlightsInTimeInterval(
+        @Query("begin") begin: Int,
+        @Query("end") end: Int
+    ): List<FlightsInTimeInterval>
+
 }
 
 class FlightTrackerRepository {
@@ -104,4 +107,7 @@ class FlightTrackerRepository {
         return openSkyApi.getFlightRoute(callsign)
     }
 
+    suspend fun getFlightsInTimeInterval(begin: Int, end: Int): List<FlightsInTimeInterval> {
+        return openSkyApi.getFlightsInTimeInterval(begin, end)
+    }
 }
