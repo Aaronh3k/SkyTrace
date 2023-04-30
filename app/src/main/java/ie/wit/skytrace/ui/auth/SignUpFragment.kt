@@ -9,18 +9,21 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import ie.wit.skytrace.R
 import ie.wit.skytrace.ui.map.MapsFragment
 
 class SignUpFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
         return inflater.inflate(R.layout.fragment_sign_up, container, false)
     }
 
@@ -44,7 +47,23 @@ class SignUpFragment : Fragment() {
                     auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                navigateToMaps()
+                                val user = auth.currentUser
+                                if (user != null) {
+                                    val userData = hashMapOf(
+                                        "displayName" to name,
+                                        "email" to email
+                                    )
+                                    firestore.collection("users").document(user.uid)
+                                        .set(userData)
+                                        .addOnSuccessListener {
+                                            navigateToMaps()
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            Toast.makeText(requireContext(), "Error saving user data.", Toast.LENGTH_SHORT).show()
+                                        }
+                                } else {
+                                    Toast.makeText(requireContext(), "User not created.", Toast.LENGTH_SHORT).show()
+                                }
                             } else {
                                 Toast.makeText(requireContext(), "Registration failed.", Toast.LENGTH_SHORT).show()
                             }

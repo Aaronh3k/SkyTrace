@@ -18,7 +18,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import ie.wit.skytrace.R
 import ie.wit.skytrace.ui.map.MapsFragment
 
@@ -103,11 +105,32 @@ class SignInFragment : Fragment() {
             .addOnCompleteListener(requireActivity()) { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "signInWithCredential:success")
-                    navigateToMaps()
+                    val user = auth.currentUser
+                    if (user != null) {
+                        createUserInFirestore(user)
+                    }
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     Toast.makeText(requireContext(), "Authentication failed.", Toast.LENGTH_SHORT).show()
                 }
+            }
+    }
+
+    private fun createUserInFirestore(user: FirebaseUser) {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(user.uid)
+
+        val userInfo = hashMapOf(
+            "displayName" to user.displayName,
+            "email" to user.email
+        )
+
+        userRef.set(userInfo)
+            .addOnSuccessListener {
+                Log.d(TAG, "User information saved in Firestore.")
+                navigateToMaps()
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error saving user information to Firestore", exception)
             }
     }
 
