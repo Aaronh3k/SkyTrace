@@ -1,6 +1,8 @@
 package ie.wit.skytrace.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +11,21 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import ie.wit.skytrace.R
 import ie.wit.skytrace.ui.map.MapsFragment
 
 class SignInFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +42,7 @@ class SignInFragment : Fragment() {
         val passwordEditText: EditText = view.findViewById(R.id.password_edit_text)
         val signInButton: Button = view.findViewById(R.id.sign_in_button)
         val signUpTextView: TextView = view.findViewById(R.id.sign_up_text_view)
+        val googleSignInButton: SignInButton = view.findViewById(R.id.google_sign_in_button)
 
         signInButton.setOnClickListener {
             val email = emailEditText.text.toString()
@@ -55,6 +65,50 @@ class SignInFragment : Fragment() {
         signUpTextView.setOnClickListener {
             navigateToSignUp()
         }
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+        googleSignInButton.setOnClickListener {
+            signInWithGoogle()
+        }
+    }
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)!!
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                Log.w(TAG, "Google sign-in failed", e)
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(requireActivity()) { task ->
+                if (task.isSuccessful) {
+                    Log.d(TAG, "signInWithCredential:success")
+                    navigateToMaps()
+                } else {
+                    Log.w(TAG, "signInWithCredential:failure", task.exception)
+                    Toast.makeText(requireContext(), "Authentication failed.", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun navigateToMaps() {
@@ -69,4 +123,10 @@ class SignInFragment : Fragment() {
             .addToBackStack(null)
             .commitAllowingStateLoss()
     }
+
+    companion object {
+        private const val TAG = "SignInFragment"
+        private const val RC_SIGN_IN = 9001
+    }
 }
+
