@@ -30,11 +30,11 @@ class SplashFragment : Fragment() {
         textView.startAnimation(anim)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            navigateToMaps()
+            navigateToSignIn()
         }, 3000)
     }
 
-    private fun navigateToMaps() {
-        (activity as MainActivity).navigateToMaps()
+    private fun navigateToSignIn() {
+        (activity as MainActivity).navigateToSignIn()
     }
 }

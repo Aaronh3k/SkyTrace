@@ -2,6 +2,7 @@ package ie.wit.skytrace
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import ie.wit.skytrace.ui.auth.SignInFragment
 import ie.wit.skytrace.ui.map.MapsFragment
 import ie.wit.skytrace.ui.splash.SplashFragment
 
@@ -15,6 +16,12 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.fragment_container, SplashFragment())
                 .commitAllowingStateLoss()
         }
+    }
+
+    fun navigateToSignIn() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, SignInFragment())
+            .commitAllowingStateLoss()
     }
 
     fun navigateToMaps() {
