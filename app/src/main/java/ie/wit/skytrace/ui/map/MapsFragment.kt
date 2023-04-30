@@ -34,6 +34,7 @@ import ie.wit.skytrace.databinding.FragmentMapsBinding
 import ie.wit.skytrace.databinding.InfoWindowFlightExtendedBinding
 import ie.wit.skytrace.model.FlightState
 import ie.wit.skytrace.model.repository.FlightTrackerRepository
+import ie.wit.skytrace.ui.account.AccountFragment
 import ie.wit.skytrace.ui.flightdetails.FlightDetailsBottomSheet
 import ie.wit.skytrace.ui.flightsintimeinterval.FlightsInTimeIntervalFragment
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
@@ -117,7 +118,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                     // Navigate to My Flight screen
                 }
                 R.id.action_account -> {
-                    // Navigate to Account screen
+                    val accountFragment = AccountFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, accountFragment)
+                        .addToBackStack(null)
+                        .commit()
                 }
             }
             true
