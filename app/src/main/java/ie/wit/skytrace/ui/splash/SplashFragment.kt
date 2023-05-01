@@ -30,11 +30,12 @@ class SplashFragment : Fragment() {
         textView.startAnimation(anim)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            navigateToSignIn()
+            val mainActivity = activity as MainActivity
+            if (mainActivity.auth.currentUser == null) {
+                mainActivity.navigateToSignIn()
+            } else {
+                mainActivity.navigateToMaps()
+            }
         }, 3000)
-    }
-
-    private fun navigateToSignIn() {
-        (activity as MainActivity).navigateToSignIn()
     }
 }

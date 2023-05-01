@@ -5,63 +5,136 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <TextView
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/ic_account_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.RoundedImageView"/>
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/account_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Account"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_picture"
+        android:layout_marginTop="16dp"/>
 
-    <TextView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/label_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/value_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/email_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email:"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/value_guideline"
         app:layout_constraintTop_toBottomOf="@+id/account_title"
         android:layout_marginTop="32dp"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/email_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="user@example.com"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/email_label"
-        app:layout_constraintTop_toTopOf="@+id/email_label"
-        android:layout_marginStart="8dp"/>
+        app:layout_constraintStart_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toTopOf="@+id/email_label"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/display_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Display Name:"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/value_guideline"
         app:layout_constraintTop_toBottomOf="@+id/email_label"
         android:layout_marginTop="16dp"/>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/display_name_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="John Doe"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/display_name_label"
-        app:layout_constraintTop_toTopOf="@+id/display_name_label"
-        android:layout_marginStart="8dp"/>
+        app:layout_constraintStart_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toTopOf="@+id/display_name_label"/>
 
-    <Button
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/phone_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/display_name_label"
+        android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/phone_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(123) 456-7890"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toTopOf="@+id/phone_label"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/address_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Address:"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/phone_label"
+        android:layout_marginTop="16dp"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/address_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="123 Main St, City, Country"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/value_guideline"
+        app:layout_constraintTop_toTopOf="@+id/address_label"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/edit_account_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit Account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/display_name_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address_label"
+        android:layout_marginTop="24dp"
+        app:cornerRadius="20dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+    <Button
+        android:id="@+id/logout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/address_label"
         android:layout_marginTop="24dp"
         android:backgroundTint="@color/teal_200"/>
 

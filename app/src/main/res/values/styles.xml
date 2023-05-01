@@ -4,4 +4,10 @@
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textColor">@color/design_default_color_primary_dark</item>
     </style>
+
+    <style name="ShapeAppearanceOverlay.App.RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>
