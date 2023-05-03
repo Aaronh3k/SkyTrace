@@ -1,6 +1,5 @@
 package ie.wit.skytrace.ui.flightsintimeinterval
 
-import FlightsInTimeIntervalAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -44,7 +43,7 @@ class FlightsInTimeIntervalFragment : Fragment() {
 
         viewModel.flightsInTimeInterval.observe(viewLifecycleOwner, Observer { flights ->
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerView.adapter = FlightsInTimeIntervalAdapter(flights)
+            binding.recyclerView.adapter = FlightsInTimeIntervalAdapter(flights, requireContext())
         })
     }
 }
