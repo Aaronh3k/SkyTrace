@@ -1,3 +1,4 @@
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -5,6 +6,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ie.wit.skytrace.R
 import ie.wit.skytrace.model.FlightsInTimeInterval
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class FlightsInTimeIntervalAdapter(private val flights: List<FlightsInTimeInterval>) :
     RecyclerView.Adapter<FlightsInTimeIntervalAdapter.FlightsInTimeIntervalViewHolder>() {
@@ -12,7 +16,10 @@ class FlightsInTimeIntervalAdapter(private val flights: List<FlightsInTimeInterv
     inner class FlightsInTimeIntervalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightIcao24: TextView = itemView.findViewById(R.id.flight_icao24)
         val flightCallsign: TextView = itemView.findViewById(R.id.flight_callsign)
-        val flightFirstSeen: TextView = itemView.findViewById(R.id.flight_firstSeen) // Changed from flightTimestamp to flightFirstSeen
+        val flightFirstSeen: TextView = itemView.findViewById(R.id.flight_firstSeen)
+        val flightEstDepartureAirport: TextView = itemView.findViewById(R.id.flight_estDepartureAirport)
+        val flightLastSeen: TextView = itemView.findViewById(R.id.flight_lastSeen)
+        val flightEstArrivalAirport: TextView = itemView.findViewById(R.id.flight_estArrivalAirport)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightsInTimeIntervalViewHolder {
@@ -20,11 +27,21 @@ class FlightsInTimeIntervalAdapter(private val flights: List<FlightsInTimeInterv
         return FlightsInTimeIntervalViewHolder(itemView)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: FlightsInTimeIntervalViewHolder, position: Int) {
         val currentItem = flights[position]
-        holder.flightIcao24.text = currentItem.icao24
-        holder.flightCallsign.text = currentItem.callsign
-        holder.flightFirstSeen.text = currentItem.firstSeen.toString() // Changed from currentItem.timestamp to currentItem.firstSeen
+        holder.flightIcao24.text = "ICAO24: ${currentItem.icao24}"
+        holder.flightCallsign.text = "Callsign: ${currentItem.callsign}"
+        holder.flightFirstSeen.text = "First Seen: ${convertUnixToHumanReadable(currentItem.firstSeen)}"
+        holder.flightEstDepartureAirport.text = "Est. Departure Airport: ${currentItem.estDepartureAirport}"
+        holder.flightLastSeen.text = "Last Seen: ${convertUnixToHumanReadable(currentItem.lastSeen)}"
+        holder.flightEstArrivalAirport.text = "Est. Arrival Airport: ${currentItem.estArrivalAirport}"
+    }
+
+    private fun convertUnixToHumanReadable(unixSeconds: Int): String {
+        val date = Date(unixSeconds * 1000L)
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return sdf.format(date)
     }
 
     override fun getItemCount(): Int {

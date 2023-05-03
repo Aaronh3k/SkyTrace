@@ -27,19 +27,24 @@ class FlightsInTimeIntervalFragment : Fragment() {
         val viewModelFactory = FlightsInTimeIntervalViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(FlightsInTimeIntervalViewModel::class.java)
 
-        binding.flightsInLastHourButton.setOnClickListener {
-            val currentTime = System.currentTimeMillis()
-            val beginTime = (currentTime - 3600000L) / 1000
-            val endTime = currentTime / 1000
+        return binding.root
+    }
 
-            viewModel.getFlightsInTimeInterval(beginTime.toInt(), endTime.toInt())
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        fetchFlightsInLastHour()
+    }
+
+    private fun fetchFlightsInLastHour() {
+        val currentTime = System.currentTimeMillis()
+        val beginTime = (currentTime - 3600000L) / 1000
+        val endTime = currentTime / 1000
+
+        viewModel.getFlightsInTimeInterval(beginTime.toInt(), endTime.toInt())
 
         viewModel.flightsInTimeInterval.observe(viewLifecycleOwner, Observer { flights ->
             binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerView.adapter = FlightsInTimeIntervalAdapter(flights)
         })
-
-        return binding.root
     }
 }

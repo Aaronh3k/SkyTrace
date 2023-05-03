@@ -108,7 +108,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         .commit()
                 }
                 R.id.action_search -> {
-                    val searchFragment = FlightsInTimeIntervalFragment()
+                    val searchFragment = SearchFragment()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, searchFragment)
                         .addToBackStack(null)
