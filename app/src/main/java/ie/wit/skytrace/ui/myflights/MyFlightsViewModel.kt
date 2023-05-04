@@ -79,6 +79,33 @@ class MyFlightsViewModel : ViewModel() {
         }
     }
 
+    fun untrackFlight(flight: MyFlightDetails) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val db = FirebaseFirestore.getInstance()
+            val flightsRef = db.collection("users").document(userId).collection("tracked_flights")
+            flightsRef.whereEqualTo("icao24", flight.icao24)
+                .whereEqualTo("callsign", flight.callsign)
+                .get()
+                .addOnSuccessListener { querySnapshot ->
+                    for (document in querySnapshot) {
+                        flightsRef.document(document.id).delete()
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Flight successfully removed")
+                                // Update the UI after removal
+                                _trackedFlights.value = _trackedFlights.value?.minus(flight)
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(TAG, "Error deleting flight", e)
+                            }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting tracked flights: ", exception)
+                }
+        }
+    }
+
     companion object {
         private const val TAG = "MyFlightsViewModel"
     }

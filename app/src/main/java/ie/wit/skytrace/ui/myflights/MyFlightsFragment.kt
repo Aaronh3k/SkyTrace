@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ie.wit.skytrace.databinding.FragmentMyFlightsBinding
+import ie.wit.skytrace.model.MyFlightDetails
 
 class MyFlightsFragment : Fragment() {
     private lateinit var viewModel: MyFlightsViewModel
@@ -24,14 +25,15 @@ class MyFlightsFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MyFlightsViewModel::class.java)
 
         // Initialize RecyclerView Adapter and LayoutManager
-        adapter = MyFlightAdapter(emptyList())
+        adapter = MyFlightAdapter(emptyList()) { flight ->
+            viewModel.untrackFlight(flight as MyFlightDetails)
+        }
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
         // Observe LiveData and update UI
         viewModel.trackedFlights.observe(viewLifecycleOwner) { flights ->
-            adapter = MyFlightAdapter(flights)
-            binding.recyclerView.adapter = adapter
+            adapter.updateFlights(flights)
         }
 
         return binding.root
