@@ -40,7 +40,6 @@ import ie.wit.skytrace.ui.flightsintimeinterval.FlightsInTimeIntervalFragment
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
-import ie.wit.skytrace.ui.search.SearchFragment
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.skytrace.ui.myflights.MyFlightsFragment
 
@@ -111,7 +110,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         .commit()
                 }
                 R.id.action_search -> {
-                    val searchFragment = SearchFragment()
+                    val searchFragment = FlightsInTimeIntervalFragment()
                     requireActivity().supportFragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, searchFragment)
                         .addToBackStack(null)

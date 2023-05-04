@@ -69,7 +69,6 @@ interface OpenSkyApi {
         @Query("begin") begin: Int,
         @Query("end") end: Int
     ): List<FlightsInTimeInterval>
-
 }
 
 class FlightTrackerRepository {
