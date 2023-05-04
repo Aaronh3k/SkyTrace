@@ -42,6 +42,7 @@ import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
 import ie.wit.skytrace.ui.search.SearchFragment
 import com.google.firebase.auth.FirebaseAuth
+import ie.wit.skytrace.ui.myflights.MyFlightsFragment
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
@@ -117,7 +118,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         .commit()
                 }
                 R.id.action_flight -> {
-                    // Navigate to My Flight screen
+                    val myFlightsFragment = MyFlightsFragment()
+                    requireActivity().supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, myFlightsFragment)
+                        .addToBackStack(null)
+                        .commit()
                 }
                 R.id.action_account -> {
                     val accountFragment = AccountFragment()
