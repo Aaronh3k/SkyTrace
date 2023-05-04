@@ -34,7 +34,7 @@ class SplashFragment : Fragment() {
             if (mainActivity.auth.currentUser == null) {
                 mainActivity.navigateToSignIn()
             } else {
-                mainActivity.navigateToMaps()
+                mainActivity.navigateToBottomNavigation()
             }
         }, 3000)
     }

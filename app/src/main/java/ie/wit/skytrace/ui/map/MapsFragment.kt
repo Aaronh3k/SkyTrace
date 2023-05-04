@@ -100,44 +100,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
             mapTypeBottomSheetFragment.show(childFragmentManager, "MapTypeBottomSheetFragment")
         }
 
-        bottomBar = binding.bottomNavigationView
-        bottomBar.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.action_maps -> {
-                    val mapsFragment = MapsFragment()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, mapsFragment)
-                        .commit()
-                }
-                R.id.action_search -> {
-                    val searchFragment = FlightsInTimeIntervalFragment()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, searchFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-                R.id.action_flight -> {
-                    val myFlightsFragment = MyFlightsFragment()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, myFlightsFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-                R.id.action_account -> {
-                    val accountFragment = AccountFragment()
-                    requireActivity().supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, accountFragment)
-                        .addToBackStack(null)
-                        .commit()
-                }
-            }
-            true
-        }
-
         mapsViewModel.currentLatLng.observe(viewLifecycleOwner) { currentLatLng ->
             updateMapLocation(currentLatLng)
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
