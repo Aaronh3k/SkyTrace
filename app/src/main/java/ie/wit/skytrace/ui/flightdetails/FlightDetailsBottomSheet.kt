@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.gms.maps.model.Marker
+import com.google.firebase.firestore.FirebaseFirestore
 import ie.wit.skytrace.databinding.BottomSheetFlightDetailsBinding
 import ie.wit.skytrace.model.AircraftMetadata
 import ie.wit.skytrace.model.FlightState
@@ -14,7 +16,8 @@ import ie.wit.skytrace.ui.map.MapsFragment
 
 class FlightDetailsBottomSheet(
     private val marker: Marker,
-    private val aircraftMetadata: AircraftMetadata
+    private val aircraftMetadata: AircraftMetadata,
+    private val userId: String?
 ) : BottomSheetDialogFragment() {
 
     override fun onCreateView(
@@ -48,7 +51,38 @@ class FlightDetailsBottomSheet(
         binding.lastUpgradedText.text = aircraftMetadata.lastUpgraded ?: "info unavailable"
         binding.userNotesText.text = aircraftMetadata.userNotes ?: "info unavailable"
 
+        binding.trackFlightButton.setOnClickListener {
+            flightState?.icao24?.let { icao24 ->
+                flightState.callsign?.let { callsign ->
+                    saveFlightDataToFirestore(icao24, callsign)
+                }
+            }
+        }
+
         return binding.root
+    }
+
+    private fun saveFlightDataToFirestore(icao24: String, callsign: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        val flightData = hashMapOf(
+            "icao24" to icao24,
+            "callsign" to callsign
+        )
+
+        if (userId != null) {
+            db.collection("users").document(userId)
+                .collection("tracked_flights")
+                .add(flightData)
+                .addOnSuccessListener { documentReference ->
+                    Toast.makeText(requireContext(), "Flight tracked successfully", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error tracking flight", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

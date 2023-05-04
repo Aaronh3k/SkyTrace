@@ -41,6 +41,7 @@ import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModel
 import ie.wit.skytrace.ui.flighttracker.FlightTrackerViewModelFactory
 import ie.wit.skytrace.ui.maptype.MapTypeBottomSheetFragment
 import ie.wit.skytrace.ui.search.SearchFragment
+import com.google.firebase.auth.FirebaseAuth
 
 class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
@@ -54,6 +55,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
     private lateinit var flightTrackerViewModel: FlightTrackerViewModel
     private val markers = mutableListOf<Marker>()
     var isBottomSheetOpen = false
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -220,7 +222,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnCameraIdleListe
                         bottomSheet?.dismiss()
                         isBottomSheetOpen = false
                     } else {
-                        val bottomSheet = FlightDetailsBottomSheet(marker, aircraftMetadata)
+                        val bottomSheet = FlightDetailsBottomSheet(marker, aircraftMetadata, auth.currentUser?.uid)
                         bottomSheet.show(childFragmentManager, "flightDetailsBottomSheet")
                         isBottomSheetOpen = true
                     }
