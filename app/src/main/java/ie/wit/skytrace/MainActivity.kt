@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.google.firebase.auth.FirebaseAuth
 import ie.wit.skytrace.ui.BottomNavigationFragment
 import ie.wit.skytrace.ui.auth.SignInFragment
-import ie.wit.skytrace.ui.map.MapsFragment
 import ie.wit.skytrace.ui.splash.SplashFragment
 
 class MainActivity : AppCompatActivity() {
