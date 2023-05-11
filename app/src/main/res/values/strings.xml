@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">SkyTrace</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <string name="altitude_info">Altitude: %s</string>
+    <string name="speed_info">Speed: %s</string>
+    <string name="vertical_rate_info">Vertical Rate: %.2f m/s</string>
+    <string name="squawk_info">Squawk: %s</string>
 </resources>

@@ -24,10 +24,10 @@ class MapTypeBottomSheetFragment(private val onMapTypeSelected: (Int) -> Unit) :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.mapTypeNormal.setOnClickListener {
-            onMapTypeSelected(GoogleMap.MAP_TYPE_NORMAL)
-            dismiss()
-        }
+//        binding.mapTypeNormal.setOnClickListener {
+//            onMapTypeSelected(GoogleMap.MAP_TYPE_NORMAL)
+//            dismiss()
+//        }
         binding.mapTypeSatellite.setOnClickListener {
             onMapTypeSelected(GoogleMap.MAP_TYPE_SATELLITE)
             dismiss()
@@ -40,6 +40,7 @@ class MapTypeBottomSheetFragment(private val onMapTypeSelected: (Int) -> Unit) :
             onMapTypeSelected(GoogleMap.MAP_TYPE_HYBRID)
             dismiss()
         }
+
     }
 
     override fun onDestroyView() {

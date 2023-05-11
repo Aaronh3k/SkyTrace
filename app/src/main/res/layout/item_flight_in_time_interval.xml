@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/flight_icao24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="icao24"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/flight_callsign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="callsign"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flight_icao24" />
+
+        <TextView
+            android:id="@+id/flight_firstSeen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="firstSeen"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flight_callsign" />
+
+        <TextView
+            android:id="@+id/flight_estDepartureAirport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="estDepartureAirport"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flight_firstSeen" />
+
+        <TextView
+            android:id="@+id/flight_lastSeen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lastSeen"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flight_estDepartureAirport" />
+
+        <TextView
+            android:id="@+id/flight_estArrivalAirport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="estArrivalAirport"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/flight_lastSeen" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

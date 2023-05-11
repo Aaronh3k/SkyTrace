@@ -5,12 +5,12 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/map_type_normal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Normal"
-        style="@style/Widget.MaterialComponents.Button.TextButton" />
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/map_type_normal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Normal"-->
+<!--        style="@style/Widget.MaterialComponents.Button.TextButton" />-->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/map_type_satellite"

@@ -7,7 +7,7 @@
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search_icon"
-        android:title="Search" />
+        android:title="Last Hour" />
     <item
         android:id="@+id/action_flight"
         android:icon="@drawable/ic_flight_icon"

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "343635005185",
+    "project_id": "skytrace",
+    "storage_bucket": "skytrace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:343635005185:android:0dec212baaef6735549500",
+        "android_client_info": {
+          "package_name": "ie.wit.skytrace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "343635005185-7i03gp3o6o0v30577g5vijtfm0e2kb21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ie.wit.skytrace",
+            "certificate_hash": "83cd416a13cd788ebacc62561d5feca83d1cecb4"
+          }
+        },
+        {
+          "client_id": "343635005185-mq396t1ds2ragc2oujvsiipaubbpg5k1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCepJIqppWL633z1VxpK0gkpk_5icMiaQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "343635005185-i8qrrlknfs4aph3cfmc4hrs4h5fhi8vc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
