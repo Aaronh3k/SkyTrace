@@ -47,19 +47,17 @@ The following Git approach was used during the development process:
 
 1. **Branches:** Two main branches were used - the main branch (master) for stable releases and a development branch (dev) for ongoing development work.
 
-2. **Issue Tracking:** For each new feature or bug, a new issue was created in the issue tracker, which served as a task for the development process.
+2. **Feature Development:** The dev branch was checked out to start working on the assigned issue. All changes and updates were committed to this branch.
 
-3. **Feature Development:** The dev branch was checked out to start working on the assigned issue. All changes and updates were committed to this branch.
+3. **Pull Requests (PRs):** Once a feature or bug fix was implemented and tested, a PR was created to merge the changes from the dev branch into the master branch.
 
-4. **Pull Requests (PRs):** Once a feature or bug fix was implemented and tested, a PR was created to merge the changes from the dev branch into the master branch.
+4. **Code Review:** The PR was then reviewed. Any necessary changes were made based on feedback before the final merging.
 
-5. **Code Review:** The PR was then reviewed. Any necessary changes were made based on feedback before the final merging.
+5. **Merging and Issue Resolution:** After a thorough review, the PR was merged into the master branch, and the linked issue was marked as resolved.
 
-6. **Merging and Issue Resolution:** After a thorough review, the PR was merged into the master branch, and the linked issue was marked as resolved.
+6. **Releases:** After a set of features were implemented and merged into the master branch, a tagged release of the application was created.
 
-7. **Releases:** After a set of features were implemented and merged into the master branch, a tagged release of the application was created.
-
-8. **Bug Fixes:** If any bugs were identified after a release, they were treated as new issues, and the above process was followed to resolve them. After bugs were fixed and tested, a new tagged release of the application was created.
+7. **Bug Fixes:** If any bugs were identified after a release, they were treated as new issues, and the above process was followed to resolve them. After bugs were fixed and tested, a new tagged release of the application was created.
 
 This structured Git approach played a pivotal role in maintaining an organized, efficient, and successful development process for the SkyTrace app.
 
