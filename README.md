@@ -76,14 +76,13 @@ One significant limitation I encountered was with the OpenSky Network API. Due t
 Furthermore, due to time constraints and the necessity to balance work with other modules, I was unable to fully implement a few features, such as a more detailed flight history and advanced user settings. These limitations, however, have been identified as areas for future enhancement.
 
 In conclusion, the development of SkyTrace has been a rewarding experience. It has enabled me to grow as a developer, gain practical experience in mobile app development, and understand the intricacies of creating a user-oriented application. Despite the challenges and limitations, I am enthusiastic about the potential improvements and refinements that I can introduce to this project in the future.
-
 ## 📚 References
 
-The following resources were instrumental in the development of the SkyTrace application:
+The development of the SkyTrace application heavily relied on the following resources:
 
 1. [Firebase Authentication Documentation](https://firebase.google.com/docs/auth)
 2. [Google Maps Platform Documentation](https://developers.google.com/maps/documentation)
-4. [OpenSky Network API Documentation]([https://openskynetwork.org/apidoc/index.html](https://openskynetwork.github.io/opensky-api/))
-5. [ADSB-Exchange Map, a kotlin flight travking application](https://github.com/amnesica/ADSB-Exchange-Map)
-6. [Stack Overflow](https://stackoverflow.com/)
+3. [OpenSky Network API Documentation](https://openskynetwork.github.io/opensky-api/): The OpenSky Network API documentation was crucial in fetching accurate and up-to-date flight information for the app.
+4. [ADSB-Exchange Map](https://github.com/amnesica/ADSB-Exchange-Map): A Kotlin flight tracking application which served as a valuable reference during the development process.
+5. [Stack Overflow](https://stackoverflow.com/): An invaluable resource for resolving the challenges and issues encountered during the development of SkyTrace.
 
