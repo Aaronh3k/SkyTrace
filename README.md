@@ -2,9 +2,9 @@
 
 SkyTrace is a feature-rich Android application designed for aviation enthusiasts and frequent flyers. The app provides real-time flight tracking information, allowing users to view all current flights on a map along with their location, speed, altitude, and status updates. 
 
-## Functionality 🚀
+## 🎯 Functionality
 
-| Feature | Description | Tool |
+| Feature 🎁 | Description 📝 | Tool 🛠️ |
 | --- | --- | --- |
 | Splash Screen | The app welcomes users with a visually appealing splash screen. | - |
 | Authentication | Secure login/Sign Up process is implemented via email/password and Google authentication. | Firebase Auth (Email + Google) |
@@ -13,8 +13,11 @@ SkyTrace is a feature-rich Android application designed for aviation enthusiasts
 | Real-Time Mapping | The location of flights is displayed on Google Maps, allowing users to view real-time information about nearby and global flights. | Google Maps |
 | Third-Party API | The app integrates with the OpenSky Network API to provide accurate and up-to-date flight information. | OpenSky Network |
 
+## 📐 UML Class Diagram
 
-## UX Approach
+![UML](https://github.com/Aaronh3k/SkyTrace/assets/24919671/dd842a66-399a-4869-adea-ece5ef4dc89e)
+
+## 🚁 UX Approach
 
 The User Experience approach adopted for the development of SkyTrace prioritized user-friendliness and simplicity. With a keen focus on Material Design guidelines, the design process ensured a blend of visual appeal with practical functionality. The intent was to create an application that is not only aesthetically pleasing but also retains a high degree of usability.
 
@@ -24,7 +27,7 @@ The implementation of real-time flight tracking on a map interface further enhan
 
 Finally, the app’s functionality was designed to be clear and concise. From secure authentication to persistent data storage, every feature was developed with user convenience and utility in mind. This comprehensive approach to the User Experience aims to make SkyTrace an efficient and enjoyable tool for all users, regardless of their aviation knowledge or app usage expertise.
 
-## DX Approach
+## 🧰 DX Approach
 
 The SkyTrace app was developed using the Model-View-ViewModel (MVVM) architectural pattern. This approach is a popular architectural pattern in software development that effectively separates the business logic of an application from its presentation logic.
 
@@ -38,8 +41,7 @@ The MVVM pattern simplifies the app's structure by dividing it into three distin
 
 Adopting the MVVM pattern also made it easier to manage the app's data flow, ensuring that the UI remains consistent with the underlying data. This robust approach to the Developer Experience (DX) aims to make SkyTrace a well-structured and maintainable app.
 
-
-## Git Approach
+## 🗂️ Git Approach
 
 The development of the SkyTrace app was organized using a structured Git approach. This approach promoted a well-documented and efficient development process. It allowed for change tracking over time, maintenance of a clean and stable codebase, and facilitated continuous improvement and bug fixes.
 
@@ -61,14 +63,27 @@ The following Git approach was used during the development process:
 
 This structured Git approach played a pivotal role in maintaining an organized, efficient, and successful development process for the SkyTrace app.
 
-## Personal Statement
+## 🎙️ Personal Statement
 
-The journey of developing SkyTrace, a real-time flight tracking app, was both exhilarating and challenging. As an individual working on this project, it allowed me to dive deep into the realm of Android app development and explore various tools and technologies.
+The development of SkyTrace, a real-time flight tracking app, was an engaging and challenging endeavor. As the sole developer on this project, it provided me with an opportunity to delve into Android app development and utilize a variety of tools and technologies.
 
-With no prior experience in mobile app development, I had to learn and apply new skills rapidly. Working with Google Maps API, Firebase for authentication and storage, implementing MVVM design pattern, and integrating with the OpenSky Network API were all part of this steep learning curve. 
+Being new to mobile app development, I needed to rapidly acquire and apply new skills. Implementing the MVVM design pattern, working with Google Maps API, utilizing Firebase for authentication and storage, and integrating the OpenSky Network API were all part of this steep learning trajectory.
 
-Git was my companion throughout this journey for version control, and it proved to be an indispensable tool for managing the codebase effectively. I encountered multiple issues during development, but the support of various online communities like Stack Overflow and Chat GPT helped me navigate through those challenges.
+Throughout this project, Git served as a vital tool for version control, assisting me in managing the codebase effectively. I faced numerous issues during the development phase, but the guidance and resources from online communities such as Stack Overflow and Chat GPT proved to be invaluable in overcoming these challenges.
 
-There were a few features, like a more detailed flight history and advanced user settings, which I couldn't fully implement due to time constraints and balancing work with other modules. However, these are areas that I have identified for future enhancement.
+One significant limitation I encountered was with the OpenSky Network API. Due to the limited flight data provided by the free tier of the API, I was unable to implement certain functionalities such as search and flight path tracking. This was a major constraint as it restricted the potential features and functionality of the app.
 
-In conclusion, the experience of developing SkyTrace was an enriching one. It has allowed me to grow as a developer, gain hands-on experience in mobile app development, and understand the nuances of creating a user-centric application. I'm excited about the potential improvements and refinements that I could bring to this project in the future.
+Furthermore, due to time constraints and the necessity to balance work with other modules, I was unable to fully implement a few features, such as a more detailed flight history and advanced user settings. These limitations, however, have been identified as areas for future enhancement.
+
+In conclusion, the development of SkyTrace has been a rewarding experience. It has enabled me to grow as a developer, gain practical experience in mobile app development, and understand the intricacies of creating a user-oriented application. Despite the challenges and limitations, I am enthusiastic about the potential improvements and refinements that I can introduce to this project in the future.
+
+## 📚 References
+
+The following resources were instrumental in the development of the SkyTrace application:
+
+1. [Firebase Authentication Documentation](https://firebase.google.com/docs/auth)
+2. [Google Maps Platform Documentation](https://developers.google.com/maps/documentation)
+4. [OpenSky Network API Documentation]([https://openskynetwork.org/apidoc/index.html](https://openskynetwork.github.io/opensky-api/))
+5. [ADSB-Exchange Map, a kotlin flight travking application](https://github.com/amnesica/ADSB-Exchange-Map)
+6. [Stack Overflow](https://stackoverflow.com/)
+
