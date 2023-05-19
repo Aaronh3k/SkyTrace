@@ -15,7 +15,7 @@ SkyTrace is a feature-rich Android application designed for aviation enthusiasts
 
 ## 📐 UML Class Diagram
 
-![UML](https://github.com/Aaronh3k/SkyTrace/assets/24919671/dd842a66-399a-4869-adea-ece5ef4dc89e)
+![UML](https://github.com/Aaronh3k/SkyTrace/assets/24919671/c8d8a831-ad74-467e-9e0a-850c8f9b21fe)
 
 ## 🚁 UX Approach
 
